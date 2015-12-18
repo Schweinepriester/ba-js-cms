@@ -1,5 +1,7 @@
 'use strict';
 var express = require('express');
+var passport = require('passport');
+var Account = require('../models/account');
 var router = express.Router();
 
 var mongoose = require('mongoose');
@@ -22,24 +24,43 @@ var pageModel = mongoose.model('page', pageSchema); // implying 'pages' as colle
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    let mongoDb = mongoose.connect('mongodb://localhost/js-cms');
+    // let mongoDb = mongoose.connect('mongodb://localhost/js-cms');
     Promise.all([
         postModel.find(),
         pageModel.find()
     ]).then(function(values){
-        mongoDb.disconnect();
-        console.log(values);
+        // mongoDb.disconnect();
         res.render('index', {title: 'Express', posts: values[0], pages: values[1]});
     });
+});
 
-    /*postModel.find(function (err, posts) {
-        if (!err) {
-            res.render('index', {title: 'Express', posts: posts});
-        } else {
-            throw err;
+router.get('/register', function(req, res) {
+    res.render('register', { });
+});
+
+router.post('/register', function(req, res) {
+    Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+        if (err) {
+            return res.render('register', { account : account });
         }
-        mongoDb.disconnect();
-    });*/
+
+        passport.authenticate('local')(req, res, function () {
+            res.redirect('/');
+        });
+    });
+});
+
+router.get('/login', function(req, res) {
+    res.render('login', { user : req.user });
+});
+
+router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.redirect('/admin');
+});
+
+router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
 });
 
 module.exports = router;
