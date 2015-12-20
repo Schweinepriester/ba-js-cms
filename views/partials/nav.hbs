@@ -1,12 +1,12 @@
 <div class="container">
-    <nav class="navbar navbar-light bg-faded">
+    <nav class="navbar bg-faded">
         <ul class="nav navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="/">Home</a>
             </li>
             {{#each pages}}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">{{title}}</a>
+                    <a class="nav-link" href="/page/{{_id}}">{{title}}</a>
                 </li>
             {{/each}}
             <li class="nav-item pull-xs-right">

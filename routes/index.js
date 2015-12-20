@@ -2,40 +2,43 @@
 var express = require('express');
 var passport = require('passport');
 var Account = require('../models/account');
+var Settings = require('../models/settings');
+var Page = require('../models/page');
+var Post = require('../models/post');
 var router = express.Router();
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
-var postSchema = new Schema({
-    _id: ObjectId,
-    title: String,
-    body: String
-});
-var postModel = mongoose.model('post', postSchema); // implying 'posts' as collection name
-
-var pageSchema = new Schema({
-    _id: ObjectId,
-    title: String,
-    body: String
-});
-var pageModel = mongoose.model('page', pageSchema); // implying 'pages' as collection name
-
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    // let mongoDb = mongoose.connect('mongodb://localhost/js-cms');
     Promise.all([
-        postModel.find(),
-        pageModel.find()
+        Post.find(),
+        Page.find(),
+        Settings.find()
     ]).then(function(values){
-        // mongoDb.disconnect();
-        res.render('index', {title: 'Express', posts: values[0], pages: values[1]});
+        res.render('index', {title: values[2][0].title, posts: values[0], pages: values[1]});
+    });
+});
+
+router.get('/page/:id', function(req, res) {
+    let pageId = req.params.id;
+    Page.find({_id: pageId}).then(function(values){
+        console.log(values[0]);
+        res.render('singlePage', {page: values[0]});
     });
 });
 
 router.get('/register', function(req, res) {
-    res.render('register', { });
+    Settings.find().then(function(val){
+        let settings = val[0].toObject();
+        if(settings.registrationEnabled){
+            res.render('register', { });
+        } else {
+            res.redirect('/');
+        }
+    });
 });
 
 router.post('/register', function(req, res) {
