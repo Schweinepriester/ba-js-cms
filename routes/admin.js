@@ -2,6 +2,8 @@
 var express = require('express');
 var router = express.Router();
 var Settings = require('../models/settings');
+var Page = require('../models/page');
+var Post = require('../models/post');
 
 router.get('/', function(req, res, next) {
     if (req.user) {
@@ -49,8 +51,20 @@ router.post('/settings', function(req, res) {
 
 router.get('/pages', function(req, res, next) {
     if (req.user) {
-        // TODO
-        res.redirect('/admin');
+        Page.find().then(function(val){
+            res.render('admin/pages', {layout: 'admin/layout_admin', pages: val});
+        });
+    } else {
+        res.redirect('/login');
+    }
+});
+
+router.get('/page/:id', function(req, res) {
+    if (req.user) {
+        let pageId = req.params.id;
+        Page.findById(pageId).then(function(doc){
+            res.render('admin/singlePage', {layout: 'admin/layout_admin', page: doc.toObject()});
+        });
     } else {
         res.redirect('/login');
     }
