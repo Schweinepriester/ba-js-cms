@@ -1,3 +1,10 @@
-<h2>{{page.title}}</h2>
-
-<div>{{{page.body}}}</div>
+<form role="form" method="post">
+  <fieldset class="form-group">
+    <label for="title">Title</label>
+    <input type="text" class="form-control" name="title" value="{{page.title}}">
+  </fieldset>
+  <textarea id="mce-textarea-page" name="body">
+    {{{page.body}}}
+  </textarea>
+  <button type="submit" class="btn btn-primary">Save</button>
+</form>

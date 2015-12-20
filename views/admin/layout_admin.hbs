@@ -5,6 +5,15 @@
     <title>{{title}}</title>
     <link rel='stylesheet' href='/bootstrap/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    {{#if editor}}
+      <script src="/jquery/jquery.min.js"></script>
+      <script src="/tinymce/tinymce.min.js"></script>
+      <script>
+        tinymce.init({
+          selector:'textarea'
+        });
+      </script>
+    {{/if}}
 </head>
 <body>
 <div class="container">

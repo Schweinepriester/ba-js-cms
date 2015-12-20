@@ -62,8 +62,39 @@ router.get('/pages', function(req, res, next) {
 router.get('/page/:id', function(req, res) {
     if (req.user) {
         let pageId = req.params.id;
+        console.log(pageId);
         Page.findById(pageId).then(function(doc){
-            res.render('admin/singlePage', {layout: 'admin/layout_admin', page: doc.toObject()});
+            res.render('admin/singlePage', {layout: 'admin/layout_admin', page: doc.toObject(), editor: true});
+        });
+    } else {
+        res.redirect('/login');
+    }
+});
+
+router.get('/new/page', function(req, res) {
+    if (req.user) {
+        let newPage = new Page();
+        console.log(newPage);
+        newPage.save(function(err, doc){
+            console.log(doc);
+        });
+    } else {
+        res.redirect('/login');
+    }
+});
+
+router.post('/page/:id', function(req, res) {
+    if (req.user) {
+        let pageId = req.params.id;
+        Page.findById(pageId).then(function(doc){
+            doc.update({
+                title: req.body.title,
+                body: req.body.body
+            }, function(err, rawResponse){
+                if (!err) {
+                    res.redirect('/admin/page/'+pageId);
+                }
+            });
         });
     } else {
         res.redirect('/login');
