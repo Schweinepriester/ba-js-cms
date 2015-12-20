@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var postSchema = new Schema({
-    _id: ObjectId,
+    // _id: ObjectId,
     title: String,
     body: String
 });

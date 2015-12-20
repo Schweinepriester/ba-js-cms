@@ -1,7 +1,10 @@
-<ol>
+<a href="/admin/new/page" class="button-new-element">
+  <button class="btn btn-primary">New Page</button>
+</a>
+<ul class="list-group">
   {{#each pages}}
-    <li>
-      <a href="page/{{_id}}">{{title}}</a>
-    </li>
+    <a href="page/{{_id}}" class="list-group-item">
+      {{@index}}. {{title}}
+    </a>
   {{/each}}
-</ol>
+</ul>

@@ -1,3 +1,4 @@
+"use strict";
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -7,6 +8,8 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var Settings = require('./models/settings');
+var Page = require('./models/page');
 
 var routes = require('./routes/index');
 //var users = require('./routes/users');
@@ -49,6 +52,20 @@ passport.deserializeUser(Account.deserializeUser());
 
 // mongoose
 mongoose.connect('mongodb://localhost/js-cms');
+
+// get default settings
+Settings.find().then(function(val){
+  app.locals.cmssettings = val[0];
+});
+
+// get all page titles
+Page.find().then(function(val){
+  let tempTitles = [];
+  val.forEach(function(page, index, arr){
+    tempTitles.push({title: page.title, _id: page._id});
+  });
+  app.locals.pageTitles = tempTitles;
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

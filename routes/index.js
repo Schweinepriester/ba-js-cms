@@ -13,20 +13,15 @@ var Schema = mongoose.Schema,
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    Promise.all([
-        Post.find(),
-        Page.find(),
-        Settings.find()
-    ]).then(function(values){
-        res.render('index', {title: values[2][0].title, posts: values[0], pages: values[1]});
+    Post.find().sort('-_id').then(function(values){
+        res.render('index', {title: req.app.locals.cmssettings.title, pages: req.app.locals.pageTitles, posts: values});
     });
 });
 
 router.get('/page/:id', function(req, res) {
     let pageId = req.params.id;
     Page.find({_id: pageId}).then(function(values){
-        console.log(values[0]);
-        res.render('singlePage', {page: values[0]});
+        res.render('singlePage', {title: req.app.locals.cmssettings.title, pages: req.app.locals.pageTitles, page: values[0]});
     });
 });
 
@@ -34,7 +29,7 @@ router.get('/register', function(req, res) {
     Settings.find().then(function(val){
         let settings = val[0].toObject();
         if(settings.registrationEnabled){
-            res.render('register', { });
+            res.render('register', {title: req.app.locals.cmssettings.title});
         } else {
             res.redirect('/');
         }
@@ -54,7 +49,7 @@ router.post('/register', function(req, res) {
 });
 
 router.get('/login', function(req, res) {
-    res.render('login', { user : req.user });
+    res.render('login', {title: req.app.locals.cmssettings.title, user : req.user });
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res) {

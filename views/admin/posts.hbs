@@ -1,0 +1,10 @@
+<a href="/admin/new/post" class="button-new-element">
+  <button class="btn btn-primary">New Post</button>
+</a>
+<ul class="list-group">
+  {{#each posts}}
+    <a href="post/{{_id}}" class="list-group-item">
+      {{@index}}. {{title}}
+    </a>
+  {{/each}}
+</ul>
